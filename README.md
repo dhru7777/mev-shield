@@ -73,7 +73,7 @@ MEV Shield is a JSON-RPC proxy that intercepts wallet transactions and routes th
 ### Local Testing:
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mev-shield.git
+git clone https://github.com/dhru7777/mev-shield.git
 cd mev-shield
 
 # Install dependencies
@@ -182,9 +182,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Project Link:** https://github.com/yourusername/mev-shield
+- **Project Link:** https://github.com/dhru7777/mev-shield
 - **Live Demo:** https://mev-shield.mev-shield.workers.dev/
-- **Issues:** https://github.com/yourusername/mev-shield/issues
+- **Issues:** https://github.com/dhru7777/mev-shield/issues
 
 ---
 
