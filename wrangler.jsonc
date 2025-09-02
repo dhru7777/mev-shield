@@ -4,12 +4,24 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "autumn-mode-6dee",
-	"main": "src/entry.py",
+	"name": "mev-shield",
+	"main": "src/index.ts",
 	"compatibility_date": "2025-09-02",
-	"compatibility_flags": [
-		"python_workers"
+	"kv_namespaces": [
+		{
+			"binding": "TXKV",
+			"id": "19587bb16c9f4a99859a59551ffd5753"
+		}
 	],
+	"vars": {
+		"FLASHBOTS_RPC": "https://rpc.flashbots.net",
+		"BLOX_PROTECT": "https://eth-protect.rpc.blxrbdn.com",
+		"EDEN_RPC": "https://api.edennetwork.io/v1/rpc",
+		"READ_RPC": "https://ethereum.publicnode.com",
+		"SEPOLIA_READ_RPC": "https://rpc.sepolia.org",
+		"GOERLI_READ_RPC": "https://rpc.goerli.mudit.blog",
+		"HOLESKY_READ_RPC": "https://rpc.holesky.ethpandaops.io"
+	},
 	"assets": {
 		// The path to the directory containing the `index.html` file to be served at `/`
 		"directory": "./public"

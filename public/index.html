@@ -1,32 +1,284 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hello, World!</title>
-	</head>
-	<body>
-		<h1 id="heading"></h1>
-		<p>This page comes from a static asset stored at `public/index.html` as configured in `wrangler.jsonc`.</p>
-		<button id="button" type="button">Fetch a random UUID</button>
-		<output id="random" for="button"></output>
-		<script>
-			fetch('/message')
-				.then((resp) => resp.text())
-				.then((text) => {
-					const h1 = document.getElementById('heading');
-					h1.textContent = text;
-				});
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEV Shield - Protect Your Transactions</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2d3748;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .feature {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .rpc-config {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+        }
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #5a67d8;
+        }
+        .status {
+            text-align: center;
+            padding: 20px;
+            background: #c6f6d5;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .steps {
+            background: #fff5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 10px 0;
+        }
+        .problem-box {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #e53e3e;
+        }
+        .solution-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #38a169;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ MEV Shield</h1>
+        <p class="subtitle">Protect your crypto transactions from being stolen by bots</p>
+        
+        <div class="feature">
+            <h3>What is MEV Shield?</h3>
+            <p><strong>MEV Shield</strong> is a Cloudflare Worker that protects your crypto transactions from being stolen by bots.</p>
+            
+            <h4>What is MEV?</h4>
+            <p><strong>MEV (Maximal Extractable Value)</strong> is when bots steal money from regular crypto traders. Here's how it works:</p>
+            
+            <div class="problem-box">
+                <h5>The Problem:</h5>
+                <ol>
+                    <li><strong>You want to buy crypto</strong> - You place an order to buy tokens</li>
+                    <li><strong>Bots see your order</strong> - They can see your transaction before it's processed</li>
+                    <li><strong>Bots jump ahead</strong> - They buy the same tokens first, driving up the price</li>
+                    <li><strong>You pay more</strong> - Your order goes through at the higher price</li>
+                    <li><strong>Bots sell and profit</strong> - They sell immediately, keeping the difference</li>
+                </ol>
+                <p><strong>Result:</strong> You lose money, bots make money. This happens to millions of traders every day.</p>
+            </div>
+            
+            <h4>How MEV Shield Protects You:</h4>
+            <div class="solution-box">
+                <h5>🛡️ The Solution:</h5>
+                <ol>
+                    <li><strong>Private channels</strong> - Your transaction goes through private, hidden routes</li>
+                    <li><strong>Bots can't see it</strong> - They don't know your transaction exists</li>
+                    <li><strong>No front-running</strong> - Bots can't jump ahead of you</li>
+                    <li><strong>You get fair prices</strong> - Your orders execute at the intended price</li>
+                    <li><strong>Keep your money</strong> - No more stolen profits</li>
+                </ol>
+                <p><strong>Result:</strong> You trade safely, bots can't steal from you.</p>
+            </div>
+            
+        </div>
 
-			const button = document.getElementById("button");
-			button.addEventListener("click", () => {
-				fetch('/random')
-					.then((resp) => resp.text())
-					.then((text) => {
-						const random = document.getElementById('random');
-						random.textContent = text;
-					});
-			});
-		</script>
-	</body>
+        <div class="feature">
+            <h3>Technical Architecture:</h3>
+            <ul>
+                <li><strong>JSON-RPC Proxy:</strong> Intercepts wallet requests and intelligently routes them</li>
+                <li><strong>Private Relay Integration:</strong> Routes write transactions through Flashbots, bloXroute, and Eden networks</li>
+                <li><strong>Fallback Protection:</strong> Automatic failover between multiple private relays</li>
+                <li><strong>Read Operation Optimization:</strong> Direct forwarding to public RPCs for balance checks</li>
+                <li><strong>Transaction Tracking:</strong> Unique ID generation and status monitoring</li>
+            </ul>
+        </div>
+
+        <div class="rpc-config">
+            <h3>Add to your wallet as Custom RPC:</h3>
+            <div id="rpc-url">Loading...</div>
+            <button class="copy-btn" onclick="copyRPC()">Copy RPC URL</button>
+        </div>
+
+        <div class="steps">
+            <h3>Mainnet Setup Instructions:</h3>
+            <ol>
+                <li>Copy the RPC URL above</li>
+                <li>In MetaMask/Rabby: Settings → Networks → Add Network</li>
+                <li>Network Name: <code>MEV Shield (Mainnet)</code></li>
+                <li>New RPC URL: <code id="rpc-display">Loading...</code></li>
+                <li>Chain ID: <code>1</code></li>
+                <li>Currency Symbol: <code>ETH</code></li>
+                <li>Block Explorer: <code>https://etherscan.io</code></li>
+            </ol>
+        </div>
+
+        <div class="feature">
+            <h3>🧪 Testnet Testing:</h3>
+            <p><strong>Test your MEV Shield safely on testnets:</strong></p>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
+                <h4>Sepolia Testnet:</h4>
+                <ul>
+                    <li><strong>RPC URL:</strong> <code id="sepolia-rpc">Loading...</code></li>
+                    <li><strong>Chain ID:</strong> <code>11155111</code></li>
+                    <li><strong>Currency:</strong> <code>ETH</code> (test tokens)</li>
+                    <li><strong>Explorer:</strong> <code>https://sepolia.etherscan.io</code></li>
+                </ul>
+                <button class="copy-btn" onclick="copySepoliaRPC()">Copy Sepolia RPC</button>
+            </div>
+
+            <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #007bff;">
+                <h4>Goerli Testnet:</h4>
+                <ul>
+                    <li><strong>RPC URL:</strong> <code id="goerli-rpc">Loading...</code></li>
+                    <li><strong>Chain ID:</strong> <code>5</code></li>
+                    <li><strong>Currency:</strong> <code>ETH</code> (test tokens)</li>
+                    <li><strong>Explorer:</strong> <code>https://goerli.etherscan.io</code></li>
+                </ul>
+                <button class="copy-btn" onclick="copyGoerliRPC()">Copy Goerli RPC</button>
+            </div>
+
+            <p><strong>Note:</strong> Testnets support read operations only. Private relay protection is available on mainnet.</p>
+        </div>
+
+        <div class="feature">
+
+        <div class="status" id="status">
+            <p id="status-text"></p>
+        </div>
+    </div>
+
+    <script>
+        // Get the current domain and construct the RPC URLs
+        const currentDomain = window.location.hostname;
+        const mainnetRpcUrl = `https://${currentDomain}/rpc`;
+        const sepoliaRpcUrl = `https://${currentDomain}/rpc/sepolia`;
+        const goerliRpcUrl = `https://${currentDomain}/rpc/goerli`;
+        
+        document.getElementById('rpc-url').textContent = mainnetRpcUrl;
+        document.getElementById('rpc-display').textContent = mainnetRpcUrl;
+        document.getElementById('sepolia-rpc').textContent = sepoliaRpcUrl;
+        document.getElementById('goerli-rpc').textContent = goerliRpcUrl;
+
+        function copyRPC() {
+            navigator.clipboard.writeText(mainnetRpcUrl).then(() => {
+                showStatus('Mainnet RPC URL copied to clipboard!', 'success');
+            }).catch(() => {
+                showStatus('Failed to copy. Please copy manually.', 'error');
+            });
+        }
+
+        function copySepoliaRPC() {
+            navigator.clipboard.writeText(sepoliaRpcUrl).then(() => {
+                showStatus('Sepolia RPC URL copied to clipboard!', 'success');
+            }).catch(() => {
+                showStatus('Failed to copy. Please copy manually.', 'error');
+            });
+        }
+
+        function copyGoerliRPC() {
+            navigator.clipboard.writeText(goerliRpcUrl).then(() => {
+                showStatus('Goerli RPC URL copied to clipboard!', 'success');
+            }).catch(() => {
+                showStatus('Failed to copy. Please copy manually.', 'error');
+            });
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('status-text');
+            statusText.textContent = message;
+            status.style.display = 'block';
+            status.style.background = type === 'success' ? '#c6f6d5' : '#fed7d7';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Test the RPC endpoint
+        async function testRPC() {
+            try {
+                const response = await fetch('/rpc', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'eth_chainId',
+                        params: []
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.result) {
+                    showStatus('RPC endpoint is working!', 'success');
+                }
+            } catch (error) {
+                showStatus('RPC endpoint test failed', 'error');
+            }
+        }
+
+        // Test on page load
+        window.addEventListener('load', testRPC);
+    </script>
+</body>
 </html>
